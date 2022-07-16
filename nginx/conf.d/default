@@ -1,0 +1,33 @@
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server ipv6only=on;
+
+        root /opt/src/Debug/public;
+        index index.html index.htm;
+
+        server_name localhost;
+        
+        location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
+            root /opt/src/Debug/public;
+            autoindex off;
+            expires 30d;
+        }
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
+        
+        location ~ flysec$ {
+	    root /opt/src/Debug;
+            fastcgi_split_path_info ^(flysec)(/.+)$;
+            fastcgi_pass 127.0.0.1:9015;
+#            fastcgi_index flysec;
+            include fastcgi_params;
+        }
+
+        # deny access to .htaccess files
+        location ~ /\.ht {
+            deny all;
+        }
+}
+

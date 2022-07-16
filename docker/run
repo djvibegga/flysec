@@ -1,0 +1,25 @@
+#!/bin/bash
+
+PROJECT=flysecdev
+VERSION=latest
+ENV=local
+
+if [ $1 ]; then
+    ENV=$1
+fi
+
+if [ $2 ]; then
+    VERSION=$2
+fi
+
+IMAGE_NAME=$PROJECT/$ENV
+IMAGE_URL=$IMAGE_NAME:$VERSION
+
+if [ $ENV = "local" ]; then
+    docker run -it -d -p 8080:80 \
+        --mount type=bind,source=$(pwd)/../src,target=/opt/src \
+        --mount type=bind,source=$(pwd)/../lib,target=/opt/lib \
+        --mount type=bind,source=$(pwd)/../nginx/conf.d/default,target=/etc/nginx/sites-enabled/default \
+	$IMAGE_URL
+fi
+

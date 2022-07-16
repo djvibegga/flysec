@@ -1,0 +1,16 @@
+#!/bin/bash
+
+PROJECT=flysecdev
+VERSION=latest
+ENV=local
+
+if [ $1 ]; then
+    ENV=$1
+fi
+
+if [ $2 ]; then
+    VERSION=$2
+fi
+
+IMAGE_NAME=$PROJECT/$ENV
+docker build -t $IMAGE_NAME:$VERSION .
