@@ -7,7 +7,8 @@ RUN apt-get install -y \
 	gcc \
 	autoconf \
 	g++ \
-	make
+	make \
+	cmake
 	
 #install dev tools
 RUN apt-get install -y \
@@ -28,7 +29,6 @@ RUN apt-get install -y \
 	libpthread-workqueue-dev libpthread-workqueue0 libpthread-stubs0-dev \
 	libcrypto++-dev \
 	libfcgi-dev \
-	libctpp2-dev ctpp2-utils \
 	libpugixml-dev \
         libmysqlclient-dev \
         libcurl4-gnutls-dev
@@ -43,6 +43,22 @@ RUN mkdir /opt/lib && cd /opt/lib && wget https://www.sqlapi.com/Download/sqlapi
 	&& mkdir /usr/local/include/sqlapi \
 	&& cp -R ./include/* /usr/local/include/sqlapi \
         && rm -rf /opt/lib/SQLAPI
+        
+#install library CTPP2 2.8.3
+RUN cd /opt/lib && git clone https://github.com/moneymanagerex/ctpp.git \
+	&& cd /opt/lib/ctpp && cmake . && make \
+	&& mkdir /usr/include/ctpp2 && cp -r include/* /usr/include/ctpp2/ \
+	&& cp ctpp2c /usr/bin/ \
+	&& cp ctpp2i /usr/bin/ \
+	&& cp ctpp2json /usr/bin/ \
+	&& cp ctpp2vm /usr/bin/ \
+	&& cp simple-compiler /usr/bin/ \
+	&& cp simple-vm /usr/bin/ \
+	&& cp libctpp2.so.2.8.3 /usr/lib/ \
+	&& ln -s /usr/lib/libctpp2.so.2.8.3 /usr/lib/libctpp2.so.2 \
+	&& ln -s /usr/lib/libctpp2.so.2 /usr/lib/libctpp2.so \
+	&& rm -rf /opt/lib/ctpp
+	
         
 #build yii-cws library
 #RUN cd /opt/lib \
@@ -59,6 +75,11 @@ RUN mkdir /opt/lib && cd /opt/lib && wget https://www.sqlapi.com/Download/sqlapi
 
 #install nginx webserver
 RUN apt-get install -y nginx
+
+#install mysql server & client
+RUN apt-get install -y \
+	mysql-client-5.6 \
+	mysql-server-5.6
 
 #copy configuration files inside the system
 COPY docker-entrypoint.sh /

@@ -17,6 +17,7 @@ IMAGE_URL=$IMAGE_NAME:$VERSION
 
 if [ $ENV = "local" ]; then
     docker run -it -d -p 8080:80 \
+        -e "LD_LIBRARY_PATH=/opt/lib/yii-cws/Release" \
         --mount type=bind,source=$(pwd)/../src,target=/opt/src \
         --mount type=bind,source=$(pwd)/../lib,target=/opt/lib \
         --mount type=bind,source=$(pwd)/../nginx/conf.d/default,target=/etc/nginx/sites-enabled/default \
